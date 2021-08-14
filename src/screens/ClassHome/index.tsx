@@ -7,9 +7,36 @@ import {NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ClassActvity } from "../ClassActvity";
 import { ClassNotas } from "../ClassNotas";
+import { classroomApi } from "../../services/classroomApi";
+import { useAuth } from "../../hooks/auth";
 
 type NavigationProp ={
     navigation: any;
+}
+
+
+async function listCourses(token: string) {
+	classroomApi.defaults.headers.authorization = `Bearer ${token}`;
+	const res = await classroomApi.get('/v1/courses');
+	return res.data.courses;
+}
+
+type CourseData = {
+	name: string,
+    id: string,
+	key: string
+}
+
+type StudentData = {
+	name: string,
+    id: string,
+	key: string
+}
+
+async function liststudent(token: string, id:string) {
+	classroomApi.defaults.headers.authorization = `Bearer ${token}`;
+	const res = await classroomApi.get(`/v1/courses ${id}`);
+	return res.data.courses;
 }
 
 export function ClassHome({navigation}:NavigationProp){
@@ -17,6 +44,7 @@ export function ClassHome({navigation}:NavigationProp){
         {id: '1', turma: 'Desenvolvimento para Ambientes Móveis (DAM)', prof: ' Prof. Leonardo Silva'},
     
     ])
+
 
     return(
         <View>
@@ -41,9 +69,9 @@ export function ClassHome({navigation}:NavigationProp){
 
             <View style={styles.cardDesc}>
                 <Text style={styles.titleCard}>Descrição</Text>
-                <Text style={styles.cardDescTex}>Turma destinada aoa compartilhamento de materias, 
+                <Text style={styles.cardDescTex}>Turma destinada ao compartilhamento de materias, 
                     avaliações, atividades voltados para a disciplina de 
-                    Desenvolvimento para Ambientes Móveis.</Text>
+                    ... .</Text>
             </View>
 
         </View>

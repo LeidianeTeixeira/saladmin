@@ -5,6 +5,8 @@ import{CLIENT_ID,
     AUTH_PROVIDER_x509_CERT_URL,
     CLIENT_SECRET,
     REDIRECT_URIS,
+    CLIENT_SCOPES,
+    RESPONSE_TYPE,
     //javascript_origins
 } from './googleAuth'
 
@@ -16,5 +18,7 @@ export{
     AUTH_PROVIDER_x509_CERT_URL,
     CLIENT_SECRET, 
     REDIRECT_URIS, 
+    CLIENT_SCOPES,
+    RESPONSE_TYPE,
     //javascript_origins
 }

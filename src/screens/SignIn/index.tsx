@@ -1,11 +1,13 @@
-import React from "react";
+import React,{useContext, useReducer} from "react";
 import{Text, View,TouchableOpacity, StatusBar} from 'react-native';
 import { styles } from "./styles";
 import {FontAwesome5} from '@expo/vector-icons';
 import { TextInput } from 'react-native-paper';
 
-import * as Google from 'expo-auth-session/providers/google';
+import * as AuthSession from 'expo-auth-session';
 import{CLIENT_ID} from '../../config'
+import { useAuth } from "../../hooks/auth";
+import { Alert } from "react-native";
 
 type NavigationProp ={
     navigation: any;
@@ -13,26 +15,18 @@ type NavigationProp ={
 
 export function SignIn({navigation}: NavigationProp){
 
-    const [request, response, promptAsync] = Google.useAuthRequest({
-        expoClientId: CLIENT_ID,
-        iosClientId: '',
-        androidClientId: '',
-        webClientId: '',
-    });
+    const {signIn, loading } = useAuth();
+
+    //console.log(User);
     
-    React.useEffect(() => {
-        if (response?.type === 'success') {
-          const { authentication } = response;
-          console.log(authentication);
-          navigation.navigate(
-              'Class', 
-              {
-                  //token: JSON.stringify(authentication?.accessToken)
-                  //token: authentication?.accessToken
-                  token: authentication
-              });
-          }
-    }, [response]);
+    async function handleSignIn(){
+        try {
+            await signIn();
+            navigation.navigate('Class');
+        } catch (error) {
+            Alert.alert(error);
+        }
+    }
     return(
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor='#FFF'/>
@@ -55,9 +49,9 @@ export function SignIn({navigation}: NavigationProp){
             />
 
             <TouchableOpacity style={styles.loginButton} 
-                onPress={()=>navigation.navigate('Class')}
-                //disabled={!request}
-                //onPress={() => {promptAsync();}}
+                //onPress={()=>navigation.navigate('Class')}
+                disabled={loading}
+                onPress={() => {handleSignIn();}}
                 >
                 <FontAwesome5 name='google' size={18} color='#FFF'/>
                 <Text style={styles.loginText}> Entrar com o Google</Text>

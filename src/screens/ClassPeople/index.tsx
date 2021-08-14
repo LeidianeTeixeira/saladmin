@@ -1,15 +1,92 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { View, StatusBar, TouchableOpacity,FlatList} from "react-native";
 import { styles } from './styles';
 import { Appbar, Card,Text, Button } from 'react-native-paper';
 import Cards from '../Components/Cards';
+import { classroomApi } from "../../services/classroomApi";
+import { useAuth } from "../../hooks/auth";
 
 type NavigationProp ={
     navigation: any;
 }
 
-export function ClassPeople({navigation}:NavigationProp){
+async function listCourses(token: string) {
+	classroomApi.defaults.headers.authorization = `Bearer ${token}`;
+	const res = await classroomApi.get('/v1/courses');
+	return res.data.courses;
+}
 
+type CourseData = {
+	//name: string,
+    id: string,
+	key: string
+}
+
+
+async function liststudent(token: string, id:string) {
+	classroomApi.defaults.headers.authorization = `Bearer ${token}`;
+	const res = await classroomApi.get(`/v1/courses ${id}/students`);
+	return res.data.courses;
+}
+
+type StudentData = {
+	name: string,
+    id: string,
+	key: string
+}
+
+export function ClassPeople({navigation}:NavigationProp){
+    const { user } = useAuth();
+    const [items, setItems] = useState<CourseData[]>([]);
+    const [aluno, setAluno] = useState<StudentData[]>([]);
+
+    /*useEffect(() => {
+		async function getItems() {
+			try {
+				let course = new Array<CourseData>(); 
+				const data = await listCourses(user.token);
+				for (let i=0;i<data.length;i++) {
+					const list = JSON.parse(JSON.stringify(data[i]));
+					course.push({ 
+						//name: list.name,
+                        id: list.id,
+						key: String(i),
+					});
+
+				}
+				setItems(course);
+                
+			} catch (error) {
+				alert("Ocorreu um erro ao buscar os items " + error.response.data.error.message);
+			}
+		}
+		getItems();
+	}, []);
+
+    useEffect(() => {
+		async function getAluno() {
+			try {
+				let student = new Array<StudentData>(); 
+				const data = await liststudent(user.token,'378168351496');
+				for (let i=0;i<data.length;i++) {
+					const list = JSON.parse(JSON.stringify(data[i]));
+					student.push({ 
+						name: list.name,
+                        id: list.id,
+						key: String(i),
+					});
+
+				}
+				setAluno(student);
+                
+			} catch (error) {
+				alert("Ocorreu um erro ao buscar os items " + error.response.data.error.message);
+			}
+		}
+		getAluno();
+	}, []);*/
+
+    
     const [alunos,setAlunos] = useState([
         {id: '1', nome: 'Leidiane Teixeira dos Reis'},
         {id: '2', nome: 'Janina Barbosa de Aguilar'},

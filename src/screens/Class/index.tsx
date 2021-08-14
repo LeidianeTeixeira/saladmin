@@ -1,21 +1,53 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, StatusBar, TouchableOpacity,FlatList} from "react-native";
 import { styles } from "./styles";
-import { Appbar, Card, Avatar, IconButton } from 'react-native-paper';
-import { NavigationContainer } from "@react-navigation/native";
+import { Card, Avatar} from 'react-native-paper';
+
+import {useAuth} from "../../hooks/auth"
+import { classroomApi } from "../../services/classroomApi";
+import { Item } from "react-native-paper/lib/typescript/components/List/List";
 
 type NavigationProp ={
     navigation: any;
 }
 
+async function listCourses(token: string) {
+	classroomApi.defaults.headers.authorization = `Bearer ${token}`;
+	const res = await classroomApi.get('/v1/courses');
+	return res.data.courses;
+}
+
+type CourseData = {
+	name: string,
+    id: string,
+	key: string
+}
+
 export function Class ({navigation}: NavigationProp) {
-    const [turmas,seTurmas] = useState([
-        {id: '1', turma: 'Desenvolvimento para Ambientes Móveis (DAM)',prof: ' Prof. Leonardo Silva'},
-        {id: '2', turma: 'TCC I e II', prof:'Prof. Alison Zille'},
-        {id: '3', turma:'Tópicos I', prof: 'Prof. Patricia Lucas'},
-        {id: '4', turma:'Segurança e Auditoria de SI', prof: 'Prof. Reginaldo'},
-       
-    ])
+    const { user } = useAuth();
+    const [items, setItems] = useState<CourseData[]>([]);
+
+    useEffect(() => {
+		async function getItems() {
+			try {
+				let course = new Array<CourseData>(); 
+				const data = await listCourses(user.token);
+				for (let i=0;i<data.length;i++) {
+					const list = JSON.parse(JSON.stringify(data[i]));
+					course.push({ 
+						name: list.name,
+                        id: list.id,
+						key: String(i),
+					});
+				}
+				setItems(course);
+			} catch (error) {
+				alert("Ocorreu um erro ao buscar os items " + error.response.data.error.message);
+			}
+		}
+		getItems();
+	}, []);
+
     return (
         <View>
             <StatusBar barStyle="dark-content" backgroundColor='#FFF'/>
@@ -26,13 +58,12 @@ export function Class ({navigation}: NavigationProp) {
             />
 
             <FlatList 
-                data={turmas}
-                keyExtractor={item=>item.id}
+                data={items}
+                //keyExtractor={item=>item.id}
                 renderItem={({item}) => (
                 <TouchableOpacity style= {styles.cardturma}onPress={()=>navigation.navigate('ClassHome')}>
                     <View style={styles.card}>
-                        <Text style={styles.titleCard}>{item.turma}</Text>
-                        <Text style={styles.descCard}>{item.prof}</Text>
+                        <Text style={styles.titleCard}>{item.name}</Text>
                     </View>
                 </TouchableOpacity>
                 )}
