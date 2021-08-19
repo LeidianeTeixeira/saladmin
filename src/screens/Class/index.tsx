@@ -19,8 +19,7 @@ async function listCourses(token: string) {
 
 type CourseData = {
 	name: string,
-    id: string,
-	key: string
+    id: string
 }
 
 export function Class ({navigation}: NavigationProp) {
@@ -37,7 +36,6 @@ export function Class ({navigation}: NavigationProp) {
 					course.push({ 
 						name: list.name,
                         id: list.id,
-						key: String(i),
 					});
 				}
 				setItems(course);
@@ -61,7 +59,7 @@ export function Class ({navigation}: NavigationProp) {
                 data={items}
                 //keyExtractor={item=>item.id}
                 renderItem={({item}) => (
-                <TouchableOpacity style= {styles.cardturma}onPress={()=>navigation.navigate('ClassHome')}>
+                <TouchableOpacity style= {styles.cardturma}onPress={()=>navigation.navigate('ClassHome', {id: item.id, nome:item.name})}>
                     <View style={styles.card}>
                         <Text style={styles.titleCard}>{item.name}</Text>
                     </View>

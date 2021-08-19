@@ -8,10 +8,11 @@ const optionsPerPage = [2, 3, 4];
 
 type NavigationProp ={
     navigation: any;
+    route: any;
 }
 
-export function ClassNotas({navigation}:NavigationProp){
-
+export function ClassNotas({route,navigation}:NavigationProp){
+    const {id, nome} = route.params;
     const [page, setPage] = React.useState<number>(0);
     const [itemsPerPage, setItemsPerPage] = React.useState(optionsPerPage[0]);
 
@@ -38,22 +39,18 @@ export function ClassNotas({navigation}:NavigationProp){
         <View>
               <StatusBar barStyle="dark-content" backgroundColor='#FFF'/>
 
-            <FlatList 
-                data={turmas}
-                keyExtractor={item=>item.id}
-                renderItem={({item}) => (
+            
                     <View style={styles.cardInit}>
-                        <Text style={styles.titleCard}>{item.turma}</Text>
+                        <Text style={styles.titleCard}>{nome}</Text>
                     </View>
-                )}
-            />
+              
 
 
             <View style={styles.menu}>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassHome')}}>Home</Button>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassPeople')}}>Pessoas</Button>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassActvity')}}>Atividades</Button>
-                <Button  style={styles.menuNotas} onPress={() => {navigation.navigate('ClassNotas')}}>Notas</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassHome',{id:id, nome:nome})}}>Home</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassPeople',{id:id, nome:nome})}}>Pessoas</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassActvity',{id:id, nome:nome})}}>Atividades</Button>
+                <Button  style={styles.menuNotas} onPress={() => {navigation.navigate('ClassNotas',{id:id, nome:nome})}}>Notas</Button>
             </View>
     
 

@@ -5,9 +5,11 @@ import { Appbar, Text, Button } from 'react-native-paper';
 
 type NavigationProp ={
     navigation: any;
+    route: any;
 }
 
-export function ClassActvity({navigation}: NavigationProp){
+export function ClassActvity({route,navigation}: NavigationProp){
+    const {id, nome} = route.params;
 
     const [atividades,setAtividades] = useState([
         {id: '1', nome: 'Atividade 1', desc: 'Atividade Módulo VI Semana 1'},
@@ -25,22 +27,17 @@ export function ClassActvity({navigation}: NavigationProp){
     return(
         <View>
             <StatusBar barStyle="dark-content" backgroundColor='#FFF'/>
-            <FlatList 
-                data={turmas}
-                keyExtractor={item=>item.id}
-                renderItem={({item}) => (
-                    <View style={styles.cardInit}>
-                        <Text style={styles.titleCard}>{item.turma}</Text>
-                    </View>
-                )}
-            />
+            
+            <View style={styles.cardInit}>
+                <Text style={styles.titleCard}>{nome}</Text>
+            </View>
 
 
             <View style={styles.menu}>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassHome')}}>Home</Button>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassPeople')}}>Pessoas</Button>
-                <Button  style={styles.menuAtv} onPress={() => {navigation.navigate('ClassActvity')}}>Atividades</Button>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassNotas')}}>Notas</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassHome',{id:id, nome:nome})}}>Home</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassPeople',{id:id, nome:nome})}}>Pessoas</Button>
+                <Button  style={styles.menuAtv} onPress={() => {navigation.navigate('ClassActvity',{id:id, nome:nome})}}>Atividades</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassNotas',{id:id, nome:nome})}}>Notas</Button>
             </View>
 
             <FlatList 

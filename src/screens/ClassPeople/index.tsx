@@ -8,6 +8,7 @@ import { useAuth } from "../../hooks/auth";
 
 type NavigationProp ={
     navigation: any;
+    route: any;
 }
 
 async function listCourses(token: string) {
@@ -32,48 +33,26 @@ async function liststudent(token: string, id:string) {
 type StudentData = {
 	name: string,
     id: string,
-	key: string
+	//key: string
 }
 
-export function ClassPeople({navigation}:NavigationProp){
+export function ClassPeople({route,navigation}:NavigationProp){
     const { user } = useAuth();
-    const [items, setItems] = useState<CourseData[]>([]);
+    const {id, nome} = route.params;
+
     const [aluno, setAluno] = useState<StudentData[]>([]);
 
     /*useEffect(() => {
-		async function getItems() {
-			try {
-				let course = new Array<CourseData>(); 
-				const data = await listCourses(user.token);
-				for (let i=0;i<data.length;i++) {
-					const list = JSON.parse(JSON.stringify(data[i]));
-					course.push({ 
-						//name: list.name,
-                        id: list.id,
-						key: String(i),
-					});
-
-				}
-				setItems(course);
-                
-			} catch (error) {
-				alert("Ocorreu um erro ao buscar os items " + error.response.data.error.message);
-			}
-		}
-		getItems();
-	}, []);
-
-    useEffect(() => {
 		async function getAluno() {
 			try {
 				let student = new Array<StudentData>(); 
-				const data = await liststudent(user.token,'378168351496');
+				const data = await liststudent(user.token, id);
 				for (let i=0;i<data.length;i++) {
 					const list = JSON.parse(JSON.stringify(data[i]));
 					student.push({ 
 						name: list.name,
                         id: list.id,
-						key: String(i),
+						//key: String(i),
 					});
 
 				}
@@ -105,21 +84,17 @@ export function ClassPeople({navigation}:NavigationProp){
     return(
         <View>
             <StatusBar barStyle="dark-content" backgroundColor='#FFF'/>
-            <FlatList 
-                data={turmas}
-                keyExtractor={item=>item.id}
-                renderItem={({item}) => (
-                    <View style={styles.cardInit}>
-                        <Text style={styles.titleCard}>{item.turma}</Text>
-                    </View>
-                )}
-            />
-
+            
+                
+            <View style={styles.cardInit}>
+                <Text style={styles.titleCard}>{nome}</Text>
+            </View>
+                
             <View style={styles.menu}>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassHome')}}>Home</Button>
-                <Button  style={styles.menuPessoas} onPress={() => {navigation.navigate('ClassPeople')}}>Pessoas</Button>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassActvity')}}>Atividades</Button>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassNotas')}}>Notas</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassHome',{id:id, nome:nome})}}>Home</Button>
+                <Button  style={styles.menuPessoas} onPress={() => {navigation.navigate('ClassPeople',{id:id, nome:nome})}}>Pessoas</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassActvity',{id:id, nome:nome})}}>Atividades</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassNotas',{id:id, nome:nome})}}>Notas</Button>
             </View>
 
             

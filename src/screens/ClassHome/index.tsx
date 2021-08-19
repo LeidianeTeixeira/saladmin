@@ -12,8 +12,13 @@ import { useAuth } from "../../hooks/auth";
 
 type NavigationProp ={
     navigation: any;
+    route: any;
+
 }
 
+type RouteProp ={
+    route: any;
+}
 
 async function listCourses(token: string) {
 	classroomApi.defaults.headers.authorization = `Bearer ${token}`;
@@ -39,39 +44,40 @@ async function liststudent(token: string, id:string) {
 	return res.data.courses;
 }
 
-export function ClassHome({navigation}:NavigationProp){
+export function ClassHome({route, navigation}:NavigationProp){
     const [turmas,seTurmas] = useState([
         {id: '1', turma: 'Desenvolvimento para Ambientes Móveis (DAM)', prof: ' Prof. Leonardo Silva'},
     
     ])
 
+    const {id, nome} = route.params;
+    //const {id} = route.params?.id;
+    //const {nome} = route.params?.nome;
+    //const {id1} = navigation.getParam('id');
+    //const {nome1} = navigation.getParam('nome');
+    
 
     return(
         <View>
            <StatusBar barStyle="dark-content" backgroundColor='#FFF'/>
             
-            <FlatList 
-                data={turmas}
-                keyExtractor={item=>item.id}
-                renderItem={({item}) => (
-                    <View style={styles.card}>
-                        <Text style={styles.titleCard}>{item.turma}</Text>
-                    </View>
-                )}
-            />
+            
+            <View style={styles.card}>
+                <Text style={styles.titleCard}>{nome}</Text>
+            </View>
+              
 
             <View style={styles.menu}>
-                <Button  style={styles.menuHome} onPress={() => {navigation.navigate('ClassHome')}}>Home</Button>
-                <Button  style={styles.menu} onPress={() =>{navigation.navigate('ClassPeople')}}>Pessoas</Button>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassActvity')}}>Atividades</Button>
-                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassNotas')}}>Notas</Button>
+                <Button  style={styles.menuHome} onPress={() => {navigation.navigate('ClassHome',{id:id, nome:nome})}}>Home</Button>
+                <Button  style={styles.menu} onPress={() =>{navigation.navigate('ClassPeople', {id:id, nome:nome})}}>Pessoas</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassActvity', {id:id, nome:nome})}}>Atividades</Button>
+                <Button  style={styles.menu} onPress={() => {navigation.navigate('ClassNotas',{id:id, nome:nome})}}>Notas</Button>
             </View>
 
             <View style={styles.cardDesc}>
                 <Text style={styles.titleCard}>Descrição</Text>
                 <Text style={styles.cardDescTex}>Turma destinada ao compartilhamento de materias, 
-                    avaliações, atividades voltados para a disciplina de 
-                    ... .</Text>
+                    avaliações, atividades voltados para a disciplina de {nome}.</Text>
             </View>
 
         </View>
